@@ -2,6 +2,8 @@ const BufferCache = require('./lib');
 const RedisCache  = require('./lib/caches/redis');
 const MemoryCache = require('./lib/caches/memory');
 
+const DEFAULT_LOCAL_CACHE_TTL_MSEC = 500;
+
 module.exports = function (config) {
   /**
    * Required parameters:
@@ -39,14 +41,22 @@ module.exports = function (config) {
     throw new Error('if provided, bufferTtlMsec must be a number greater than 0 and less than ttlMsec')
   }
 
+  if (config.localTtlMsec && (typeof config.localTtlMsec !== 'number' || config.localTtlMsec <= 0 || config.localTtlMsec > config.bufferTtlMsec)) {
+    throw new Error('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec')
+  }
+
   if (config.localCacheSize && (typeof config.localCacheSize !== 'number' || config.localCacheSize < 0)) {
     throw new Error('if provided, localCacheSize must be a number gte 0')
   }
 
+  if (config.keyPrefix && (typeof config.keyPrefix !== 'string')) {
+    throw new Error('if provided, keyPrefix must be a string');
+  }
+
   const remoteCacheSpec = {
-    store:     new RedisCache(config.host, config.port, config.db),
+    store:     new RedisCache(config.host, config.port, config.db, config.keyPrefix),
     ttl:       config.ttlMsec,
-    bufferTtl: config.bufferTtlMsec || config.ttlMsec / 2
+    bufferTtl: config.bufferTtlMsec || config.ttlMsec / 2,
   };
 
   let localCacheSpec;
@@ -54,7 +64,7 @@ module.exports = function (config) {
   if (config.localCacheSize > 0) {
     localCacheSpec = {
       store: new MemoryCache(config.localCacheSize),
-      ttl:   config.bufferTtlMsec
+      ttl:   config.localTtlMsec || remoteCacheSpec.bufferTtl < DEFAULT_LOCAL_CACHE_TTL_MSEC ? remoteCacheSpec.bufferTtl : DEFAULT_LOCAL_CACHE_TTL_MSEC
     }
   }
 
