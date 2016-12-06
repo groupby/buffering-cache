@@ -296,6 +296,62 @@ describe('buffering cache', () => {
     });
   });
 
+  it('should call function with supplied \'that\'', (done) => {
+    const someObject = {
+      inner: 10,
+      getInner: function() {
+        return this.inner;
+      },
+      setInner: function(target) {
+        this.inner = target;
+      }
+    };
+
+    const anotherObject = {
+      inner: 10,
+      getInner: function() {
+        return this.inner;
+      },
+      setInner: function(target) {
+        this.inner = target;
+      }
+    };
+
+    const remoteCache = {
+      store:     {
+        get:    (key) => {},
+        setpx:  (key, value, ttl) => {},
+        delete: (key) => {},
+        pttl:   (key) => ttl
+      },
+      ttl:       60,
+      bufferTtl: 30
+    };
+
+    const ttl      = 60;
+
+    const localCache = {
+      store:     {
+        get:    (key) => {},
+        setpx:  (key, value, ttl) => {},
+        delete: (key) => {}
+      },
+      ttl:       10
+    };
+
+    someObject.setInner(30);
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+    const wrappedFunction  = bufferingCache.wrapFunction(someObject.getInner, anotherObject);
+
+    expect(someObject.getInner()).to.eql(30);
+
+    wrappedFunction().delay(10).then((value) => {
+      expect(value).to.eql(10);
+      done();
+    });
+  });
+
   it('get value from local cache, attempt to refresh buffer due to low ttl', (done) => {
     const remoteArgs = {
       get:    null,
