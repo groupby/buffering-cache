@@ -13,8 +13,10 @@ module.exports = function (config) {
    *
    * Optional parameters:
    * - db: defaults to 0
-   * - localCacheSize: defaults to 0 (disabled)
+   * - keyPrefix: defaults to '', applies to all redis keys
    * - bufferTtlMsec: defaults to ttlMsec / 2
+   * - localCacheSize: defaults to 0 (disabled)
+   * - localTtlMsec: defaults to 500, only applies if localCacheSize is greater than 0
    */
 
   if (!config || typeof config !== 'object') {
