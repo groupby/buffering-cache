@@ -8,10 +8,7 @@ Cache a little cold? Cache misses slowing you down?
 
 Currently works with Redis only. Welcoming PRs for memcached or any other in-memory database.
 
-Also offers a multi-level cache option. In addition to Redis, you can use local memory cache courtesy of [lru-cache](https://github.com/isaacs/node-lru-cache) before failing over to a remote Redis instance.
-
-## Quick Summary
-`buffering-cache` will 
+Also offers a multi-level cache option. In addition to Redis, you can use local memory cache courtesy of [lru-cache](https://github.com/isaacs/node-lru-cache) before failing over to a remote Redis instance. 
 
 ## Installation:
 ```bash
