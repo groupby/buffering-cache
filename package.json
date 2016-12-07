@@ -13,6 +13,10 @@
     "lint",
     "license"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/groupby/buffering-cache.git"
+  },
   "author": "GroupBy Inc",
   "license": "MIT",
   "dependencies": {
