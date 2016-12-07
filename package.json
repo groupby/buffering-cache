@@ -22,7 +22,7 @@
     "ioredis": "^2.4.0",
     "json-stable-stringify": "^1.0.1",
     "lru-cache": "^4.0.1",
-    "uuid": "^2.0.3"
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

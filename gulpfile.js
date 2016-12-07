@@ -16,7 +16,7 @@ gulp.task('test:dirty', () => {
 });
 
 gulp.task('pre-test', () => {
-  return gulp.src('app/**/*.js')
+  return gulp.src('lib/**/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
@@ -26,9 +26,9 @@ gulp.task('test:coverage', ['pre-test'], () => {
     .pipe(mocha({reporter: 'spec'}))
     .pipe(istanbul.writeReports({
       reporters: [
+        'lcov',
         'text',
-        'html',
-        'lcov'
+        'html'
       ]
     }))
     .pipe(istanbul.enforceThresholds({
