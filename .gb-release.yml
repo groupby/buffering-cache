@@ -1,0 +1,6 @@
+github:
+  usernameEnvVar: DOCKER_GITHUB_USER
+  codeEnvVar: DOCKER_GITHUB_CODE
+versionInFiles:
+  - ./README.md
+  - ./example-server/deployment/deploy.yml

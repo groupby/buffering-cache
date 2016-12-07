@@ -27,7 +27,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info('Called with ' + first + ' ' + second + ' ' + third);
+      log.info(`Called with ${ first } ${ second } ${ third}`);
       return first + second + third;
     });
 
@@ -61,7 +61,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info('Called with ' + first + ' ' + second + ' ' + third);
+      log.info(`Called with ${ first } ${ second } ${ third}`);
       return first + second + third;
     });
 
@@ -106,7 +106,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info('Called with ' + first + ' ' + second + ' ' + third);
+      log.info(`Called with ${ first } ${ second } ${ third}`);
       return first + second + third;
     });
 
@@ -152,7 +152,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info('Called with ' + first + ' ' + second + ' ' + third);
+      log.info(`Called with ${ first } ${ second } ${ third}`);
       return first + second + third;
     });
 
@@ -199,7 +199,7 @@ describe('buffering cache', () => {
 
     let counter           = 0;
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info('Called with ' + first + ' ' + second + ' ' + third);
+      log.info(`Called with ${ first } ${ second } ${ third}`);
       counter++;
       return first + second + third + counter;
     });

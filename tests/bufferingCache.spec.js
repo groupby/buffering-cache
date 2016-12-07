@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const chai    = require('chai');
 const expect  = chai.expect;
 
@@ -10,7 +9,7 @@ const BufferingCache = require('../lib');
 describe('buffering cache', () => {
   it('accepts no local cache', () => {
     const remoteCache = {
-      store:     {
+      store: {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
@@ -32,21 +31,21 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           remoteArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          remoteArgs.setpx.key   = key;
-          remoteArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
           remoteArgs.setpx.value = value;
         },
         delete: (key) => {
           remoteArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           remoteArgs.ttl = key;
-          return ttl;
+          return ttlMsec;
         }
       },
       ttl:       60,
@@ -61,27 +60,27 @@ describe('buffering cache', () => {
     };
 
     const getValue = 'i got this';
-    const ttl      = 60;
+    const ttlMsec      = 60;
 
     const localCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           localArgs.get = key;
           return getValue;
         },
-        setpx:  (key, value, ttl) => {
-          localArgs.setpx.key   = key;
-          localArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
           localArgs.setpx.value = value;
         },
         delete: (key) => {
           localArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           localArgs.ttl = key;
         }
       },
-      ttl:       10
+      ttl: 10
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -120,22 +119,22 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           remoteArgs.get = key;
           return getValue;
         },
-        setpx:  (key, value, ttl) => {
-          remoteArgs.setpx.key   = key;
-          remoteArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
           remoteArgs.setpx.value = value;
         },
         delete: (key) => {
           remoteArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           remoteArgs.ttl = key;
-          return ttl;
+          return ttlMsec;
         }
       },
       ttl:       60,
@@ -150,26 +149,26 @@ describe('buffering cache', () => {
     };
 
     const getValue = 'i got this';
-    const ttl      = 60;
+    const ttlMsec      = 60;
 
     const localCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           localArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          localArgs.setpx.key   = key;
-          localArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
           localArgs.setpx.value = value;
         },
         delete: (key) => {
           localArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           localArgs.ttl = key;
         }
       },
-      ttl:       10
+      ttl: 10
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -211,21 +210,21 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           remoteArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          remoteArgs.setpx.key   = key;
-          remoteArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
           remoteArgs.setpx.value = value;
         },
         delete: (key) => {
           remoteArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           remoteArgs.ttl = key;
-          return ttl;
+          return ttlMsec;
         }
       },
       ttl:       60,
@@ -240,26 +239,26 @@ describe('buffering cache', () => {
     };
 
     const getValue = 'i got this';
-    const ttl      = 60;
+    const ttlMsec      = 60;
 
     const localCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           localArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          localArgs.setpx.key   = key;
-          localArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
           localArgs.setpx.value = value;
         },
         delete: (key) => {
           localArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           localArgs.ttl = key;
         }
       },
-      ttl:       10
+      ttl: 10
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -298,7 +297,7 @@ describe('buffering cache', () => {
 
   it('should call function with supplied \'that\'', (done) => {
     const someObject = {
-      inner: 10,
+      inner:    10,
       getInner: function() {
         return this.inner;
       },
@@ -308,7 +307,7 @@ describe('buffering cache', () => {
     };
 
     const anotherObject = {
-      inner: 10,
+      inner:    10,
       getInner: function() {
         return this.inner;
       },
@@ -318,25 +317,25 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
+      store: {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
-        pttl:   (key) => ttl
+        pttl:   (key) => ttlMsec
       },
       ttl:       60,
       bufferTtl: 30
     };
 
-    const ttl      = 60;
+    const ttlMsec      = 60;
 
     const localCache = {
-      store:     {
+      store: {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {}
       },
-      ttl:       10
+      ttl: 10
     };
 
     someObject.setInner(30);
@@ -362,27 +361,27 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           remoteArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          remoteArgs.setpx.key   = key;
-          remoteArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
           remoteArgs.setpx.value = value;
         },
-        setnx:  (key, value, ttl) => {
-          remoteArgs.setnx.key   = key;
-          remoteArgs.setnx.ttl   = ttl;
+        setnx: (key, value, ttl) => {
+          remoteArgs.setnx.key = key;
+          remoteArgs.setnx.ttl = ttl;
           remoteArgs.setnx.value = value;
           return 'OK';
         },
         delete: (key) => {
           remoteArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           remoteArgs.ttl = key;
-          return ttl;
+          return ttlMsec;
         }
       },
       ttl:       60,
@@ -397,27 +396,27 @@ describe('buffering cache', () => {
     };
 
     const getValue = 'i got this';
-    const ttl      = 10;
+    const ttlMsec      = 10;
 
     const localCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           localArgs.get = key;
           return getValue;
         },
-        setpx:  (key, value, ttl) => {
-          localArgs.setpx.key   = key;
-          localArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
           localArgs.setpx.value = value;
         },
         delete: (key) => {
           localArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           localArgs.ttl = key;
         }
       },
-      ttl:       10
+      ttl: 10
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -444,7 +443,7 @@ describe('buffering cache', () => {
       expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
       expect(remoteArgs.setpx.value).to.eql(`${getValue}_new`);
       expect(remoteArgs.setpx.ttl).to.eql(60);
-      expect(remoteArgs.delete).to.match(new RegExp(functionArg + '.*' + 'refresh'));
+      expect(remoteArgs.delete).to.match(new RegExp(`${functionArg }.*` + 'refresh'));
 
       expect(localArgs.setpx).not.to.eql({});
       expect(localArgs.setpx.key).to.match(new RegExp(functionArg));
@@ -465,27 +464,27 @@ describe('buffering cache', () => {
     };
 
     const remoteCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           remoteArgs.get = key;
         },
-        setpx:  (key, value, ttl) => {
-          remoteArgs.setpx.key   = key;
-          remoteArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
           remoteArgs.setpx.value = value;
         },
-        setnx:  (key, value, ttl) => {
-          remoteArgs.setnx.key   = key;
-          remoteArgs.setnx.ttl   = ttl;
+        setnx: (key, value, ttl) => {
+          remoteArgs.setnx.key = key;
+          remoteArgs.setnx.ttl = ttl;
           remoteArgs.setnx.value = value;
           return 'NOT_OK';
         },
         delete: (key) => {
           remoteArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           remoteArgs.ttl = key;
-          return ttl;
+          return ttlMsec;
         }
       },
       ttl:       60,
@@ -500,27 +499,27 @@ describe('buffering cache', () => {
     };
 
     const getValue = 'i got this';
-    const ttl      = 10;
+    const ttlMsec      = 10;
 
     const localCache = {
-      store:     {
-        get:    (key) => {
+      store: {
+        get: (key) => {
           localArgs.get = key;
           return getValue;
         },
-        setpx:  (key, value, ttl) => {
-          localArgs.setpx.key   = key;
-          localArgs.setpx.ttl   = ttl;
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
           localArgs.setpx.value = value;
         },
         delete: (key) => {
           localArgs.delete = key;
         },
-        pttl:   (key) => {
+        pttl: (key) => {
           localArgs.ttl = key;
         }
       },
-      ttl:       10
+      ttl: 10
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
