@@ -1,0 +1,22 @@
+machine:
+  node:
+    version: 7
+dependencies:
+  pre:
+    - git config --global user.email "ops@groubyinc.com"
+    - git config --global user.name "GroupBy Ops"
+    - git config --global push.default simple
+    - npm install --global gulp-cli
+  override:
+    - npm install --silent
+test:
+  override:
+    - gulp test
+    - npm run coverage:codacy
+deployment:
+  hub-and-npm:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: groupby
+    commands:
+      - echo "//registry.npmjs.org/:_authToken=${NPM_API_KEY}" > ~/.npmrc
+      - npm publish
