@@ -3,9 +3,6 @@ machine:
     version: 7
 dependencies:
   pre:
-    - git config --global user.email "ops@groubyinc.com"
-    - git config --global user.name "GroupBy Ops"
-    - git config --global push.default simple
     - npm install --global gulp-cli
   override:
     - npm install --silent
