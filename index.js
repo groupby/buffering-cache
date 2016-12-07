@@ -43,12 +43,12 @@ module.exports = function (config) {
     throw new Error('if provided, bufferTtlMsec must be a number greater than 0 and less than ttlMsec');
   }
 
-  if (config.localTtlMsec && (typeof config.localTtlMsec !== 'number' || config.localTtlMsec <= 0 || config.localTtlMsec > config.bufferTtlMsec)) {
-    throw new Error('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
-  }
-
   if (config.localCacheSize && (typeof config.localCacheSize !== 'number' || config.localCacheSize < 0)) {
     throw new Error('if provided, localCacheSize must be a number gte 0');
+  }
+
+  if (config.localTtlMsec && (typeof config.localTtlMsec !== 'number' || config.localTtlMsec <= 0 || config.localTtlMsec > config.bufferTtlMsec)) {
+    throw new Error('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
   }
 
   if (config.keyPrefix && (typeof config.keyPrefix !== 'string')) {
