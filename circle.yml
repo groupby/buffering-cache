@@ -1,8 +1,11 @@
 machine:
+  services:
+    - docker
   node:
     version: 7
 dependencies:
   pre:
+    - docker run -d -p 6379:6379 --name redis redis
     - npm install --global gulp-cli
   override:
     - npm install --silent
