@@ -1,7 +1,7 @@
 {
   "name": "buffering-cache",
   "version": "1.0.1",
-  "description": "",
+  "description": "Node cache wrapper that keeps your cache warm",
   "main": "index.js",
   "scripts": {
     "test": "gulp test",
