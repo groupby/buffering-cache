@@ -14,6 +14,7 @@ describe('cache', () => {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
+        client: {}
       },
       ttl: 500
     })).not.to.throw();
@@ -25,6 +26,7 @@ describe('cache', () => {
         get:    (key) => Promise.delay(100),
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
+        client: {}
       },
       ttl: 500
     });
@@ -45,6 +47,7 @@ describe('cache', () => {
         },
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
+        client: {}
       },
       ttl: 500
     });
@@ -60,35 +63,46 @@ describe('cache', () => {
   it('rejects invalid params', () => {
     expect(() => new Cache()).to.throw(/object/);
     expect(() => new Cache({})).to.throw(/object/);
-    expect(() => new Cache({store: {}})).to.throw(/store.get/);
+    expect(() => new Cache({store: {}})).to.throw(/store.client/);
     expect(() => new Cache({
       store: {
-        get: () => {}
+        client: {}
+      }
+    })).to.throw(/store.get/);
+
+    expect(() => new Cache({
+      store: {
+        client: {},
+        get:    () => {}
       }
     })).to.throw(/store\.get/);
 
     expect(() => new Cache({
       store: {
-        get: (key) => {}
+        client: {},
+        get:    (key) => {}
       }
     })).to.throw(/store\.setpx/);
 
     expect(() => new Cache({
       store: {
-        get:   (key) => {},
-        setpx: () => {}
+        client: {},
+        get:    (key) => {},
+        setpx:  () => {}
       }
     })).to.throw(/store\.setpx/);
 
     expect(() => new Cache({
       store: {
-        get:   (key) => {},
-        setpx: (key, value, ttl) => {}
+        client: {},
+        get:    (key) => {},
+        setpx:  (key, value, ttl) => {}
       }
     })).to.throw(/store\.delete/);
 
     expect(() => new Cache({
       store: {
+        client: {},
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: () => {}
@@ -97,6 +111,7 @@ describe('cache', () => {
 
     expect(() => new Cache({
       store: {
+        client: {},
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {}
@@ -105,6 +120,7 @@ describe('cache', () => {
 
     expect(() => new Cache({
       store: {
+        client: {},
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
@@ -114,6 +130,7 @@ describe('cache', () => {
 
     expect(() => new Cache({
       store: {
+        client: {},
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
@@ -123,6 +140,7 @@ describe('cache', () => {
 
     expect(() => new Cache({
       store: {
+        client: {},
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {}

@@ -13,7 +13,8 @@ describe('buffering cache', () => {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
-        pttl:   (key) => {}
+        pttl:   (key) => {},
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -46,7 +47,8 @@ describe('buffering cache', () => {
         pttl: (key) => {
           remoteArgs.ttl = key;
           return ttlMsec;
-        }
+        },
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -78,7 +80,8 @@ describe('buffering cache', () => {
         },
         pttl: (key) => {
           localArgs.ttl = key;
-        }
+        },
+        client: {}
       },
       ttl: 10
     };
@@ -135,7 +138,8 @@ describe('buffering cache', () => {
         pttl: (key) => {
           remoteArgs.ttl = key;
           return ttlMsec;
-        }
+        },
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -166,7 +170,8 @@ describe('buffering cache', () => {
         },
         pttl: (key) => {
           localArgs.ttl = key;
-        }
+        },
+        client: {}
       },
       ttl: 10
     };
@@ -225,7 +230,8 @@ describe('buffering cache', () => {
         pttl: (key) => {
           remoteArgs.ttl = key;
           return ttlMsec;
-        }
+        },
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -256,7 +262,8 @@ describe('buffering cache', () => {
         },
         pttl: (key) => {
           localArgs.ttl = key;
-        }
+        },
+        client: {}
       },
       ttl: 10
     };
@@ -321,7 +328,8 @@ describe('buffering cache', () => {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
         delete: (key) => {},
-        pttl:   (key) => ttlMsec
+        pttl:   (key) => ttlMsec,
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -333,7 +341,8 @@ describe('buffering cache', () => {
       store: {
         get:    (key) => {},
         setpx:  (key, value, ttl) => {},
-        delete: (key) => {}
+        delete: (key) => {},
+        client: {}
       },
       ttl: 10
     };
@@ -382,7 +391,8 @@ describe('buffering cache', () => {
         pttl: (key) => {
           remoteArgs.ttl = key;
           return ttlMsec;
-        }
+        },
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -414,7 +424,8 @@ describe('buffering cache', () => {
         },
         pttl: (key) => {
           localArgs.ttl = key;
-        }
+        },
+        client: {}
       },
       ttl: 10
     };
@@ -485,7 +496,8 @@ describe('buffering cache', () => {
         pttl: (key) => {
           remoteArgs.ttl = key;
           return ttlMsec;
-        }
+        },
+        client: {}
       },
       ttl:       60,
       bufferTtl: 30
@@ -517,7 +529,8 @@ describe('buffering cache', () => {
         },
         pttl: (key) => {
           localArgs.ttl = key;
-        }
+        },
+        client: {}
       },
       ttl: 10
     };
