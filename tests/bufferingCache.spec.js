@@ -125,7 +125,7 @@ describe('buffering cache', () => {
       store: {
         get: (key) => {
           remoteArgs.get = key;
-          return getValue;
+          return JSON.stringify({value: getValue});
         },
         setpx: (key, value, ttl) => {
           remoteArgs.setpx.key = key;
@@ -289,7 +289,7 @@ describe('buffering cache', () => {
 
       expect(remoteArgs.setpx).not.to.eql({});
       expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
-      expect(remoteArgs.setpx.value).to.eql(getValue);
+      expect(remoteArgs.setpx.value).to.eql(JSON.stringify({value: getValue}));
       expect(remoteArgs.setpx.ttl).to.eql(60);
       expect(remoteArgs.delete).to.eql(null);
 
@@ -452,7 +452,7 @@ describe('buffering cache', () => {
 
       expect(remoteArgs.setpx).not.to.eql({});
       expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
-      expect(remoteArgs.setpx.value).to.eql(`${getValue}_new`);
+      expect(remoteArgs.setpx.value).to.eql(JSON.stringify({value: `${getValue}_new`}));
       expect(remoteArgs.setpx.ttl).to.eql(60);
       expect(remoteArgs.delete).to.match(new RegExp(`${functionArg }.*` + 'refresh'));
 

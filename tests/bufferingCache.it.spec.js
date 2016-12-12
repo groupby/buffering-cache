@@ -43,6 +43,44 @@ describe('buffering cache', () => {
       .catch((err) => done(err || 'fail'));
   });
 
+  it('fetch object from function and cache locally and in redis', (done) => {
+    const redisCache = new RedisCache('localhost', 6379);
+
+    const remoteCache = {
+      store:     redisCache,
+      ttl:       2000,
+      bufferTtl: 500
+    };
+
+    const memoryCache = new MemoryCache(10);
+    const localCache  = {
+      store: memoryCache,
+      ttl:   400
+    };
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+
+    const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
+      log.info(`Called with ${ first } ${ second } ${ third}`);
+      return {result: first + second + third};
+    });
+
+    redisCache.client.flushdb()
+      .then(() => memoryCache.client.reset())
+      .then(() => wrappedFunction('this', 'that', 'the other'))
+      .then((response) => expect(response).to.eql({result: 'thisthatthe other'}))
+      .then(() => memoryCache.client.keys())
+      .then((localKeys) => expect(localKeys.length).to.eql(1))
+      .then(() => redisCache.client.keys('*'))
+      .then((remoteKeys) => {
+        expect(remoteKeys.length).to.eql(1);
+        return redisCache.client.get(remoteKeys[0]);
+      })
+      .then((redisValue) => expect(redisValue).to.eql(JSON.stringify({value: {result: 'thisthatthe other'}})))
+      .then(() => done())
+      .catch((err) => done(err || 'fail'));
+  });
+
   it('ensure timeouts are honored by local and redis', (done) => {
     const redisCache = new RedisCache('localhost', 6379);
 
@@ -217,7 +255,7 @@ describe('buffering cache', () => {
         expect(remoteKeys.length).to.eql(1);
         return redisCache.client.get(remoteKeys[0]);
       })
-      .then((response) => expect(response).to.eql('thisthatthe other2'))
+      .then((response) => expect(response).to.eql(JSON.stringify({value: 'thisthatthe other2'})))
       .then(() => done())
       .catch((err) => done(err || 'fail'));
   });
