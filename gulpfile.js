@@ -24,6 +24,10 @@ gulp.task('pre-test', () => {
 gulp.task('test:coverage', ['pre-test'], () => {
   return gulp.src(['tests/**/*.spec.js'])
     .pipe(mocha({reporter: 'spec'}))
+    .once('error', () => {
+      console.error('tests failed');
+      process.exit(1);
+    })
     .pipe(istanbul.writeReports({
       reporters: [
         'lcov',
