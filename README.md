@@ -1,4 +1,6 @@
 # buffering-cache
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/groupby/buffering-cache.svg)](https://greenkeeper.io/)
 [![CircleCI](https://circleci.com/gh/groupby/buffering-cache.svg?style=svg)](https://circleci.com/gh/groupby/buffering-cache)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fef770286f884ecc9c221d8bb61ae083)](https://www.codacy.com/app/GroupByInc/buffering-cache?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupby/buffering-cache&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fef770286f884ecc9c221d8bb61ae083)](https://www.codacy.com/app/GroupByInc/buffering-cache?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupby/buffering-cache&amp;utm_campaign=Badge_Coverage)
