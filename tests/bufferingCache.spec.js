@@ -187,7 +187,200 @@ describe('buffering cache', () => {
 
     wrappedFunction(functionArg).delay(10).then((value) => {
       expect(value).to.eql(getValue);
+      expect(localArgs.get).to.match(new RegExp(functionArg));
 
+      expect(functionCalledWith).to.eql(null);
+      expect(remoteArgs.get).to.match(new RegExp(functionArg));
+      expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+
+      expect(remoteArgs.setpx).to.eql({});
+      expect(remoteArgs.delete).to.eql(null);
+
+      expect(localArgs.setpx).not.to.eql({});
+      expect(localArgs.setpx.key).to.match(new RegExp(functionArg));
+      expect(localArgs.setpx.value).to.eql(getValue);
+      expect(localArgs.setpx.ttl).to.eql(10);
+      expect(localArgs.delete).to.eql(null);
+      done();
+    });
+  });
+
+
+
+  it('get value from local cache, mutated by postCallMutator function', (done) => {
+    const remoteArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    const remoteCache = {
+      store: {
+        get: (key) => {
+          remoteArgs.get = key;
+        },
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
+          remoteArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          remoteArgs.delete = key;
+        },
+        pttl: (key) => {
+          remoteArgs.ttl = key;
+          return ttlMsec;
+        },
+        client: {}
+      },
+      ttl:       60,
+      bufferTtl: 30
+    };
+
+    const localArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    const getValue = 33;
+    const ttlMsec      = 60;
+
+    const localCache = {
+      store: {
+        get: (key) => {
+          localArgs.get = key;
+          return getValue;
+        },
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
+          localArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          localArgs.delete = key;
+        },
+        pttl: (key) => {
+          localArgs.ttl = key;
+        },
+        client: {}
+      },
+      ttl: 10
+    };
+
+    const callMe = (d) => {
+      return d*2;
+    };
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+
+    let functionCalledWith = null;
+    const wrappedFunction  = bufferingCache.wrapFunction((first) => {
+      functionCalledWith = first;
+    }, null, null, callMe);
+
+    const functionArg = 'give me this';
+
+    wrappedFunction(functionArg).delay(10).then((value) => {
+      expect(value).to.eql(getValue*2);
+
+      expect(localArgs.get).to.match(new RegExp(functionArg));
+
+      expect(functionCalledWith).to.eql(null);
+      expect(remoteArgs.get).to.eql(null);
+      expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+
+      expect(remoteArgs.setpx).to.eql({});
+      expect(remoteArgs.delete).to.eql(null);
+
+      expect(localArgs.setpx).to.eql({});
+      expect(localArgs.delete).to.eql(null);
+      done();
+    });
+  });
+
+
+  it('executes postCallMutator when passed and accessing from remote', (done) => {
+    const remoteArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    const remoteCache = {
+      store: {
+        get: (key) => {
+          remoteArgs.get = key;
+          return JSON.stringify({value: getValue});
+        },
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
+          remoteArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          remoteArgs.delete = key;
+        },
+        pttl: (key) => {
+          remoteArgs.ttl = key;
+          return ttlMsec;
+        },
+        client: {}
+      },
+      ttl:       60,
+      bufferTtl: 30
+    };
+
+    const localArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    const getValue = 33;
+    const ttlMsec      = 60;
+
+    const localCache = {
+      store: {
+        get: (key) => {
+          localArgs.get = key;
+        },
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
+          localArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          localArgs.delete = key;
+        },
+        pttl: (key) => {
+          localArgs.ttl = key;
+        },
+        client: {}
+      },
+      ttl: 10
+    };
+
+    const callMe = (d) => {
+      return d*2;
+    };
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+
+    let functionCalledWith = null;
+    const wrappedFunction  = bufferingCache.wrapFunction((first) => {
+      functionCalledWith = first;
+    }, null, 'first', callMe);
+
+    const functionArg = 'give me this';
+
+    wrappedFunction(functionArg).delay(10).then((value) => {
+      expect(value).to.eql(getValue*2);
+      //Everything below this is to make sure nothing else changed when we did a thing
       expect(localArgs.get).to.match(new RegExp(functionArg));
 
       expect(functionCalledWith).to.eql(null);
