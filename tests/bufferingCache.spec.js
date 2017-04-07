@@ -271,7 +271,7 @@ describe('buffering cache', () => {
     };
 
     const callMe = (d) => {
-      return d*2;
+      return d * 2;
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -284,7 +284,7 @@ describe('buffering cache', () => {
     const functionArg = 'give me this';
 
     wrappedFunction(functionArg).delay(10).then((value) => {
-      expect(value).to.eql(getValue*2);
+      expect(value).to.eql(getValue * 2);
 
       expect(localArgs.get).to.match(new RegExp(functionArg));
 
@@ -366,7 +366,7 @@ describe('buffering cache', () => {
     };
 
     const callMe = (d) => {
-      return d*2;
+      return d * 2;
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
@@ -379,7 +379,7 @@ describe('buffering cache', () => {
     const functionArg = 'give me this';
 
     wrappedFunction(functionArg).delay(10).then((value) => {
-      expect(value).to.eql(getValue*2);
+      expect(value).to.eql(getValue * 2);
       //Everything below this is to make sure nothing else changed when we did a thing
       expect(localArgs.get).to.match(new RegExp(functionArg));
 
@@ -400,6 +400,108 @@ describe('buffering cache', () => {
   });
 
   it('check local cache, check remote, get from original function, then update caches', (done) => {
+    const remoteArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    const remoteCache = {
+      store: {
+        get: (key) => {
+          remoteArgs.get = key;
+        },
+        setpx: (key, value, ttl) => {
+          remoteArgs.setpx.key = key;
+          remoteArgs.setpx.ttl = ttl;
+          remoteArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          remoteArgs.delete = key;
+        },
+        pttl: (key) => {
+          remoteArgs.ttl = key;
+          return ttlMsec;
+        },
+        client: {}
+      },
+      ttl:       60,
+      bufferTtl: 30
+    };
+
+    const localArgs = {
+      get:    null,
+      setpx:  {},
+      delete: null,
+      ttl:    null
+    };
+
+    //getValue gets mutated
+    const getValue = '1234';
+    const ttlMsec      = 60;
+
+    const localCache = {
+      store: {
+        get: (key) => {
+          localArgs.get = key;
+        },
+        setpx: (key, value, ttl) => {
+          localArgs.setpx.key = key;
+          localArgs.setpx.ttl = ttl;
+          localArgs.setpx.value = value;
+        },
+        delete: (key) => {
+          localArgs.delete = key;
+        },
+        pttl: (key) => {
+          localArgs.ttl = key;
+        },
+        client: {}
+      },
+      ttl: 10
+    };
+
+    const callMe = (d) => {
+      return d * 2;
+    };
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+
+    let functionCalledWith = null;
+    const wrappedFunction  = bufferingCache.wrapFunction((first) => {
+      functionCalledWith = first;
+      return getValue;
+    }, null, null, callMe);
+
+
+    const functionArg = 'give me this';
+
+    wrappedFunction(functionArg).delay(10).then((value) => {
+      expect(value).to.eql(getValue * 2);
+
+      expect(localArgs.get).to.match(new RegExp(functionArg));
+
+      expect(functionCalledWith).to.match(new RegExp(functionArg));
+      expect(remoteArgs.get).to.match(new RegExp(functionArg));
+      expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+
+      expect(remoteArgs.setpx).not.to.eql({});
+      expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
+      expect(remoteArgs.setpx.value).to.eql(JSON.stringify({value: getValue}));
+      expect(remoteArgs.setpx.ttl).to.eql(60);
+      expect(remoteArgs.delete).to.eql(null);
+
+      expect(localArgs.setpx).not.to.eql({});
+      expect(localArgs.setpx.key).to.match(new RegExp(functionArg));
+      expect(localArgs.setpx.value).to.eql(getValue);
+      expect(localArgs.setpx.ttl).to.eql(10);
+      expect(localArgs.delete).to.eql(null);
+      done();
+    });
+  });
+
+  it('data not in local or remote cache, has to retrieve from original service AND THEN mutates the data', (done) => {
     const remoteArgs = {
       get:    null,
       setpx:  {},
