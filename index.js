@@ -72,3 +72,5 @@ module.exports = function (config) {
 
   return new BufferCache(remoteCacheSpec, localCacheSpec);
 };
+
+module.exports.CACHE_LEVEL = BufferCache.CACHE_LEVEL;
