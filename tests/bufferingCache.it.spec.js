@@ -7,6 +7,7 @@ log.level('debug');
 const BufferingCache = require('../lib');
 const RedisCache     = require('../lib/caches/redis');
 const MemoryCache    = require('../lib/caches/memory');
+const ApiCache       = require('../index');
 
 describe('buffering cache', () => {
   it('fetch value from function and cache locally and in redis', (done) => {
@@ -259,4 +260,216 @@ describe('buffering cache', () => {
       .then(() => done())
       .catch((err) => done(err || 'fail'));
   });
+
+  it('configuration is not provided', () => {
+    expect(() => new ApiCache()).to.throw('configuration must be provided');
+  });
+
+  it('host is not present', () => {
+    const noHostConfig = {};
+    expect(() => new ApiCache(noHostConfig)).to.throw('host must be provided');
+  });
+
+  it('host is not valid', () => {
+    const wrongHostConfig = {host: 5};
+    expect(() => new ApiCache(wrongHostConfig)).to.throw('host must be provided');
+  });
+
+  it('port is not present', () => {
+    const sampleConfig = {
+      host: 'localhost'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('port must be a number 0-65535');
+  });
+
+  it('port is not valid', () => {
+    const sampleConfig = {
+      host: 'localhost',
+      port: 'strings lol'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('port must be a number 0-65535');
+  });
+
+  it('port is out of range', () => {
+    const sampleConfig = {
+      host: 'localhost',
+      port: 65536
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('port must be a number 0-65535');
+  });
+
+  it('port is out of range', () => {
+    const sampleConfig = {
+      host: 'localhost',
+      port: -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('port must be a number 0-65535');
+  });
+
+  it('ttlMsec not provided', () => {
+    const sampleConfig = {
+      host: 'localhost',
+      port: 1337
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('ttlMsec must be a number greater than 0');
+  });
+
+  it('ttlMsec not valid', () => {
+    const sampleConfig = {
+      host:    'localhost',
+      port:    1337,
+      ttlMsec: 'moar strings'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('ttlMsec must be a number greater than 0');
+  });
+
+  it('ttlMsec out of range', () => {
+    const sampleConfig = {
+      host:    'localhost',
+      port:    1337,
+      ttlMsec: -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('ttlMsec must be a number greater than 0');
+  });
+
+  it('db is not valid', () => {
+    const sampleConfig = {
+      host:    'localhost',
+      port:    1337,
+      ttlMsec: 10,
+      db:      'strings boogaloo'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, db must be a number 0-255');
+  });
+
+  it('db is out of range', () => {
+    const sampleConfig = {
+      host:    'localhost',
+      port:    1337,
+      ttlMsec: 10,
+      db:      -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, db must be a number 0-255');
+  });
+
+  it('db is out of range', () => {
+    const sampleConfig = {
+      host:    'localhost',
+      port:    1337,
+      ttlMsec: 10,
+      db:      256
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, db must be a number 0-255');
+  });
+
+  it('bufferTtlMsec is not valid', () => {
+    const sampleConfig = {
+      host:          'localhost',
+      port:          1337,
+      ttlMsec:       10,
+      db:            255,
+      bufferTtlMsec: 'stringssss'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, bufferTtlMsec must be a number greater than 0 and less than ttlMsec');
+  });
+
+  it('bufferTtlMsec is out of range', () => {
+    const sampleConfig = {
+      host:          'localhost',
+      port:          1337,
+      ttlMsec:       10,
+      db:            255,
+      bufferTtlMsec: -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, bufferTtlMsec must be a number greater than 0 and less than ttlMsec');
+  });
+
+  it('bufferTtlMsec is greater than ttlMsec', () => {
+    const sampleConfig = {
+      host:          'localhost',
+      port:          1337,
+      ttlMsec:       10,
+      db:            255,
+      bufferTtlMsec: 200
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, bufferTtlMsec must be a number greater than 0 and less than ttlMsec');
+  });
+
+  it('localCacheSize is not valid', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        10,
+      db:             255,
+      bufferTtlMsec:  5,
+      localCacheSize: 'strings? strings?!! striiiiiings!!!'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, localCacheSize must be a number gte 0');
+  });
+
+  it('localCacheSize is out of range', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        10,
+      db:             255,
+      bufferTtlMsec:  5,
+      localCacheSize: -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, localCacheSize must be a number gte 0');
+  });
+
+  it('localTtlMsec is not valid', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        10,
+      db:             255,
+      bufferTtlMsec:  5,
+      localCacheSize: 20,
+      localTtlMsec:   '!(!string))'
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
+  });
+
+  it('localTtlMsec is out of range', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        10,
+      db:             255,
+      bufferTtlMsec:  5,
+      localCacheSize: 20,
+      localTtlMsec:   -1
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
+  });
+
+  it('localTtlMsec is greater than bufferTtlMsec', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        10,
+      db:             255,
+      bufferTtlMsec:  5,
+      localCacheSize: 20,
+      localTtlMsec:   10
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
+  });
+
+  it('keyPrefix is not valid', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        600,
+      db:             255,
+      bufferTtlMsec:  500,
+      localCacheSize: 20,
+      localTtlMsec:   200,
+      keyPrefix:      2
+    };
+    expect(() => new ApiCache(sampleConfig)).to.throw('if provided, keyPrefix must be a string');
+  });
+
 });
