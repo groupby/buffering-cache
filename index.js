@@ -51,6 +51,10 @@ module.exports = function (config) {
     throw new Error('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
   }
 
+  if (!config.localCacheSize && config.localTtlMsec){
+    throw new Error('if localTtlMsec is provided, localCacheSize must be provided as well');
+  }
+
   if (config.keyPrefix && (typeof config.keyPrefix !== 'string')) {
     throw new Error('if provided, keyPrefix must be a string');
   }
@@ -77,7 +81,6 @@ module.exports = function (config) {
       ttl:   ttl
     };
   }
-
   return new BufferCache(remoteCacheSpec, localCacheSpec);
 };
 

@@ -458,6 +458,18 @@ describe('buffering cache', () => {
     expect(() => new Cache(sampleConfig)).to.throw('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
   });
 
+  it('localTtlMsec is provided but localCacheSize is not', () => {
+    const sampleConfig = {
+      host:          'localhost',
+      port:          1337,
+      ttlMsec:       10,
+      db:            255,
+      bufferTtlMsec: 10,
+      localTtlMsec:  5
+    };
+    expect(() => new Cache(sampleConfig)).to.throw('if localTtlMsec is provided, localCacheSize must be provided as well');
+  });
+
   it('keyPrefix is not valid', () => {
     const sampleConfig = {
       host:           'localhost',
@@ -470,6 +482,70 @@ describe('buffering cache', () => {
       keyPrefix:      2
     };
     expect(() => new Cache(sampleConfig)).to.throw('if provided, keyPrefix must be a string');
+  });
+
+  it('localCacheSize is not defined', () => {
+    const sampleConfig = {
+      host:          'localhost',
+      port:          1337,
+      ttlMsec:       600,
+      db:            255,
+      bufferTtlMsec: 400,
+      keyPrefix:     'prefix'
+    };
+
+    const sampleCache = new Cache(sampleConfig);
+    const parameters = sampleCache.localCache.getParams();
+    expect(parameters.ttl).to.eql(400);
+  });
+
+  it('localCacheSize is defined but localTtlMsec is not', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        600,
+      db:             255,
+      bufferTtlMsec:  600,
+      localCacheSize: 20,
+      keyPrefix:      'prefix'
+    };
+
+    const sampleCache = new Cache(sampleConfig);
+    const parameters = sampleCache.localCache.getParams();
+    expect(parameters.ttl).to.eql(500);
+  });
+
+  it('localCacheSize and localTtlMsec are defined', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        600,
+      db:             255,
+      bufferTtlMsec:  600,
+      localCacheSize: 20,
+      localTtlMsec:   300,
+      keyPrefix:      'prefix'
+    };
+
+    const sampleCache = new Cache(sampleConfig);
+    const parameters = sampleCache.localCache.getParams();
+    expect(parameters.ttl).to.eql(300);
+  });
+
+  it('ttl is assigned the value of remoteCacheSpec.bufferttl', () => {
+    const sampleConfig = {
+      host:           'localhost',
+      port:           1337,
+      ttlMsec:        600,
+      db:             255,
+      bufferTtlMsec:  450,
+      localCacheSize: 20,
+      keyPrefix:      'prefix'
+    };
+
+    const sampleCache = new Cache(sampleConfig);
+    const parameters = sampleCache.localCache.getParams();
+    expect(parameters.ttl).to.eql(450);
   });
 
 });
