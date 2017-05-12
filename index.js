@@ -51,6 +51,10 @@ module.exports = function (config) {
     throw new Error('if provided, localTtlMsec must be a number greater than 0 and less than bufferTtlMsec');
   }
 
+  if (!config.localCacheSize && config.localTtlMsec){
+    throw new Error('if localTtlMsec is provided, localCacheSize must be provided as well');
+  }
+
   if (config.keyPrefix && (typeof config.keyPrefix !== 'string')) {
     throw new Error('if provided, keyPrefix must be a string');
   }
@@ -64,12 +68,19 @@ module.exports = function (config) {
   let localCacheSpec = undefined;
 
   if (config.localCacheSize > 0) {
+    let ttl = DEFAULT_LOCAL_CACHE_TTL_MSEC;
+
+    if (config.localTtlMsec){
+      ttl = config.localTtlMsec;
+
+    } else if ( remoteCacheSpec.bufferTtl && remoteCacheSpec.bufferTtl < DEFAULT_LOCAL_CACHE_TTL_MSEC){
+      ttl = remoteCacheSpec.bufferTtl;
+    }
     localCacheSpec = {
       store: new MemoryCache(config.localCacheSize),
-      ttl:   config.localTtlMsec || remoteCacheSpec.bufferTtl < DEFAULT_LOCAL_CACHE_TTL_MSEC ? remoteCacheSpec.bufferTtl : DEFAULT_LOCAL_CACHE_TTL_MSEC
+      ttl:   ttl
     };
   }
-
   return new BufferCache(remoteCacheSpec, localCacheSpec);
 };
 
