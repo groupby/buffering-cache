@@ -1,6 +1,6 @@
 const bunyan       = require('bunyan');
 const PrettyStream = require('bunyan-prettystream');
-const prettyStdOut = new PrettyStream({mode: 'dev'});
+const prettyStdOut = new PrettyStream({mode: 'dev', useColor: false});
 prettyStdOut.pipe(process.stdout);
 
 const pjson = require('./package.json');
