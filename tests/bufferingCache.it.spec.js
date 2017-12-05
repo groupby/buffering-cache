@@ -44,6 +44,45 @@ describe('buffering cache', () => {
       .catch((err) => done(err || 'fail'));
   });
 
+  it('delete value from local cache and from redis cache', (done) => {
+    const redisCache = new RedisCache('localhost', 6379);
+
+    const remoteCache = {
+      store:     redisCache,
+      ttl:       2000,
+      bufferTtl: 500
+    };
+
+    const memoryCache = new MemoryCache(10);
+    const localCache  = {
+      store: memoryCache,
+      ttl:   400
+    };
+
+    const bufferingCache = new BufferingCache(remoteCache, localCache);
+
+    const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
+      log.info(`Called with ${ first } ${ second } ${ third}`);
+      return first + second + third;
+    });
+
+    redisCache.client.flushdb()
+    .then(() => memoryCache.client.reset())
+    .then(() => wrappedFunction('this', 'that', 'the other'))
+    .then((response) => expect(response).to.eql('thisthatthe other'))
+    .then(() => memoryCache.client.keys())
+    .then((localKeys) => expect(localKeys.length).to.eql(1))
+    .then(() => redisCache.client.keys('*'))
+    .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
+    .then(() => wrappedFunction.delete('this', 'that', 'the other'))
+    .then(() => memoryCache.client.keys())
+    .then((localKeys) => expect(localKeys.length).to.eql(0))
+    .then(() => redisCache.client.keys('*'))
+    .then((remoteKeys) => expect(remoteKeys.length).to.eql(0))
+    .then(() => done())
+    .catch((err) => done(err || 'fail'));
+  });
+
   it('fetch object from function and cache locally and in redis', (done) => {
     const redisCache = new RedisCache('localhost', 6379);
 
