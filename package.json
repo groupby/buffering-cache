@@ -30,6 +30,7 @@
     "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
+    "semantic-release": "^15.13.3",
     "sinon": "^7.2.3",
     "supertest": "^3.0.0",
     "supertest-as-promised": "^4.0.2"
