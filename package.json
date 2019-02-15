@@ -1,47 +1,86 @@
 {
-  "name": "buffering-cache",
-  "version": "1.1.3",
+  "name": "@xtrctio/buffering-cache",
   "description": "Node cache wrapper that keeps your cache warm",
-  "main": "index.js",
-  "scripts": {
-    "test": "gulp test",
-    "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage",
-    "lint": "gulp lint",
-    "license": "node licenseChecker.js"
+  "version": "0.0.1",
+  "author": "Eric Hacke",
+  "bugs": "https://github.com/xtrctio/buffering-cache/issues",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
-  "precommit": [
-    "lint",
-    "license"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/groupby/buffering-cache.git"
-  },
-  "author": "GroupBy Inc",
-  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.6",
     "bunyan": "^1.8.4",
     "bunyan-prettystream": "^0.1.3",
-    "ioredis": "^2.4.0",
+    "ioredis": "^4.6.2",
     "json-stable-stringify": "^1.0.1",
-    "lru-cache": "^4.0.1",
+    "lru-cache": "^5.1.1",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "codacy-coverage": "^2.0.2",
-    "eslint-plugin-no-only-tests": "^1.1.0",
-    "gb-license-check": "^1.0.1",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-if": "^2.0.2",
-    "gulp-istanbul": "^1.1.1",
-    "gulp-mocha": "^3.0.1",
+    "@xtrctio/eslint-config": "^2.0.7",
+    "chai": "^4.2.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "dotenv": "^6.2.0",
+    "eslint-plugin-no-only-tests": "^2.1.0",
+    "husky": "^1.3.1",
     "istanbul": "^0.4.3",
-    "pre-commit": "^1.1.3",
+    "jsdoc": "^3.5.5",
+    "jsdoc-to-markdown": "^4.0.1",
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
+    "sinon": "^7.2.3",
     "supertest": "^3.0.0",
     "supertest-as-promised": "^4.0.2"
+  },
+  "files": [
+    "lib/**",
+    "config/**",
+    "app/**",
+    "*.js",
+    "!scratch.js"
+  ],
+  "homepage": "https://github.com/xtrctio/buffering-cache",
+  "husky": {
+    "hooks": {
+      "pre-commit": "fixpack && npm run docs && git add README.md && LIST=`git diff-index --cached --name-only HEAD | grep '.*\\.js' | grep -v json`; if [ \"$LIST\" ]; then npm run lint && git add $LIST; fi"
+    }
+  },
+  "keywords": [
+    "buffering-cache",
+    "cache",
+    "ioredis",
+    "lru",
+    "redis"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "nyc": {
+    "exclude": [
+      "coverage/**",
+      "tests/**",
+      "scratch.js",
+      "index.js"
+    ],
+    "reporter": [
+      "html",
+      "text",
+      "text-summary",
+      "lcov"
+    ],
+    "all": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/groupby/buffering-cache.git"
+  },
+  "scripts": {
+    "docs": "jsdoc2md --template README.template --files \"lib/**/*.js\" > README.md",
+    "lint": "eslint \"**/*.js\" --fix",
+    "test": "npm run unit && npm run lint",
+    "test-all": "nyc mocha --use_strict \"tests/**/*.internet.js\" \"tests/**/*.it.js\" \"tests/**/*.unit.js\"",
+    "test-most": "nyc mocha --use_strict \"tests/**/*.it.js\" \"tests/**/*.unit.js\" --exit",
+    "unit": "nyc mocha --use_strict --exit \"tests/**/*.unit.js\""
   }
 }

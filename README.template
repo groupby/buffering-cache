@@ -72,3 +72,4 @@ const configuration = {
 
 const bufferingCache = new BufferingCache(configuration);
 
+{{>main}}

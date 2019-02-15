@@ -1,0 +1,7 @@
+coverage
+.idea
+.nyc_output
+scratch.js
+deployment
+resources
+scripts
