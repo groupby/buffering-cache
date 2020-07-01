@@ -9,7 +9,7 @@ Cache a little cold? Cache misses slowing you down?
 
 `buffering-cache` keeps your cache warm asynchronously. Minimizing cache misses and keeping the entries from becoming stale.
 
-Currently works with Redis only. Welcoming PRs for memcached or any other in-memory database.
+Currently works with Redis only. Requires an 'ioredis' Redis client to be provided.
 
 Also offers a multi-level cache option. In addition to Redis, you can use local memory cache courtesy of [lru-cache](https://github.com/isaacs/node-lru-cache) before failing over to a remote Redis instance. 
 
@@ -22,11 +22,21 @@ npm install --save buffering-cache
 ```javascript
 const BufferingCache = require('buffering-cache');
 const rp = require('request-promise');
+const Redis = require('ioredis');
 
 const bufferingCache = new BufferingCache({
-  host: 'localhost',
-  port: 6379,
-  ttlMsec: 5000
+  // Required:
+  redisClient: new Redis({
+    host: 'localhost',
+    port: 6379,
+    db: 0,
+  }),
+  ttlMsec: 5000, // Redis ttl. Must be a number gte 0
+
+  // Optional:
+  bufferTtlMsec: 500, // Buffer TTL in msec. Defaults to ttlMsec / 2. Must be gt 0 and lt ttlMsec
+  localCacheSize: 0,  // Local LRU cache size. Defaults to 0 (disabled). Must be gt 0.
+  localTtlMsec: 500   // Local LRU cache TTL. Defaults to 500 ms, or bufferTtlMsec, whichever is less
 });
 
 const rawFunction = () => rp('http://www.google.com');
@@ -55,23 +65,4 @@ bufferedAndCachedFunction()
   // Refreshes the cache again
   return bufferedAndCachedFunction();
 })
-```
-
-## Configuration
-```javascript
-const configuration = {
-  // Required:
-  host: 'localhost',  // Redis host. Must be a string
-  port: 6379,         // Redis port. Must be a number 0-65535
-  ttlMsec: 500,       // Redis ttl. Must be a number gte 0
-  
-  // Optional:
-  db: 0,              // Redis db. Defaults to 0. Must be a number 0-255
-  keyPrefix: '',      // Redis key prefix. Defaults to ''. Must be a string
-  bufferTtlMsec: 500, // Buffer TTL in msec. Defaults to ttlMsec / 2. Must be gt 0 and lt ttlMsec
-  localCacheSize: 0,  // Local LRU cache size. Defaults to 0 (disabled). Must be gt 0.
-  localTtlMsec: 500   // Local LRU cache TTL. Defaults to 500 ms, or bufferTtlMsec, whichever is less
-};
-
-const bufferingCache = new BufferingCache(configuration);
 ```
