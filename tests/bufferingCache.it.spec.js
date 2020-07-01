@@ -1,4 +1,4 @@
-const chai   = require('chai');
+const chai = require('chai');
 const expect = chai.expect;
 const Redis = require('ioredis');
 
@@ -6,9 +6,9 @@ const log = require('../logger');
 log.level('debug');
 
 const BufferingCache = require('../lib');
-const RedisCache     = require('../lib/caches/redis');
-const MemoryCache    = require('../lib/caches/memory');
-const Cache       = require('../index');
+const RedisCache = require('../lib/caches/redis');
+const MemoryCache = require('../lib/caches/memory');
+const Cache = require('../index');
 
 const redisClient = new Redis({
   host: 'localhost',
@@ -26,7 +26,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   400
     };
@@ -34,7 +34,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return first + second + third;
     });
 
@@ -60,7 +60,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   400
     };
@@ -68,25 +68,25 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return first + second + third;
     });
 
     redisCache.client.flushdb()
-    .then(() => memoryCache.client.reset())
-    .then(() => wrappedFunction('this', 'that', 'the other'))
-    .then((response) => expect(response).to.eql('thisthatthe other'))
-    .then(() => memoryCache.client.keys())
-    .then((localKeys) => expect(localKeys.length).to.eql(1))
-    .then(() => redisCache.client.keys('*'))
-    .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
-    .then(() => wrappedFunction.delete('this', 'that', 'the other'))
-    .then(() => memoryCache.client.keys())
-    .then((localKeys) => expect(localKeys.length).to.eql(0))
-    .then(() => redisCache.client.keys('*'))
-    .then((remoteKeys) => expect(remoteKeys.length).to.eql(0))
-    .then(() => done())
-    .catch((err) => done(err || 'fail'));
+      .then(() => memoryCache.client.reset())
+      .then(() => wrappedFunction('this', 'that', 'the other'))
+      .then((response) => expect(response).to.eql('thisthatthe other'))
+      .then(() => memoryCache.client.keys())
+      .then((localKeys) => expect(localKeys.length).to.eql(1))
+      .then(() => redisCache.client.keys('*'))
+      .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
+      .then(() => wrappedFunction.delete('this', 'that', 'the other'))
+      .then(() => memoryCache.client.keys())
+      .then((localKeys) => expect(localKeys.length).to.eql(0))
+      .then(() => redisCache.client.keys('*'))
+      .then((remoteKeys) => expect(remoteKeys.length).to.eql(0))
+      .then(() => done())
+      .catch((err) => done(err || 'fail'));
   });
 
   it('fetch object from function and cache locally and in redis', (done) => {
@@ -99,7 +99,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   400
     };
@@ -107,7 +107,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return {result: first + second + third};
     });
 
@@ -137,7 +137,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   50
     };
@@ -145,7 +145,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return first + second + third;
     });
 
@@ -182,7 +182,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   50
     };
@@ -190,7 +190,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return first + second + third;
     });
 
@@ -228,7 +228,7 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   50
     };
@@ -236,7 +236,7 @@ describe('buffering cache', () => {
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       return first + second + third;
     });
 
@@ -274,16 +274,16 @@ describe('buffering cache', () => {
     };
 
     const memoryCache = new MemoryCache(10);
-    const localCache  = {
+    const localCache = {
       store: memoryCache,
       ttl:   50
     };
 
     const bufferingCache = new BufferingCache(remoteCache, localCache);
 
-    let counter           = 0;
+    let counter = 0;
     const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
-      log.info(`Called with ${ first } ${ second } ${ third}`);
+      log.info(`Called with ${first} ${second} ${third}`);
       counter++;
       return first + second + third + counter;
     });
@@ -417,6 +417,16 @@ describe('buffering cache', () => {
       bufferTtlMsec:  5,
       localCacheSize: 20,
       localTtlMsec:   10
+    };
+    expect(() => new Cache(sampleConfig)).to.throw();
+  });
+
+  it('localTtlMsec is provided but localCacheSize is not', () => {
+    const sampleConfig = {
+      redisClient,
+      ttlMsec:       10,
+      bufferTtlMsec: 10,
+      localTtlMsec:  5
     };
     expect(() => new Cache(sampleConfig)).to.throw();
   });
