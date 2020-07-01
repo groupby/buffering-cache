@@ -6,12 +6,10 @@
   "scripts": {
     "test": "gulp test",
     "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage",
-    "lint": "gulp lint",
-    "license": "node licenseChecker.js"
+    "lint": "gulp lint"
   },
   "precommit": [
-    "lint",
-    "license"
+    "lint"
   ],
   "repository": {
     "type": "git",
@@ -33,7 +31,6 @@
     "chai-as-promised": "^6.0.0",
     "codacy-coverage": "^2.0.2",
     "eslint-plugin-no-only-tests": "^1.1.0",
-    "gb-license-check": "^1.0.1",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
     "gulp-if": "^2.0.2",
