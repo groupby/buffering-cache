@@ -6,12 +6,12 @@ prettyStdOut.pipe(process.stdout);
 const pjson = require('./package.json');
 
 module.exports = bunyan.createLogger({
-  name:    pjson.name,
-  streams: [
-    {
-      type:   'raw',
-      level:  'info',
-      stream: prettyStdOut
-    }
-  ]
+    name:    pjson.name,
+    streams: [
+        {
+            type:   'raw',
+            level:  'info',
+            stream: prettyStdOut
+        }
+    ]
 });
