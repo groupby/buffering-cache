@@ -1,0 +1,31 @@
+version: 2.1
+jobs:
+  run-unit-tests:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:9
+      - image: redis:4.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-lock-{{ checksum "package-lock.json" }}
+      - run:
+          name: Installing NPM packages
+          command: npm install
+      - save_cache:
+          key: npm-lock-{{ checksum "package-lock.json" }}
+          paths:
+            - "~/app/node_modules"
+      - run:
+          name: Waiting for Redis to start
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
+      - run:
+          name: Running tests
+          command: npm test
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - run-unit-tests:
+          context: org-global
