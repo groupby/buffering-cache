@@ -14,6 +14,7 @@ const DEFAULT_LOCAL_CACHE_TTL_MSEC = 500;
  * - bufferTtlMsec: defaults to ttlMsec / 2
  * - localCacheSize: defaults to 0 (disabled)
  * - localTtlMsec: defaults to 500, only applies if localCacheSize is greater than 0
+ * - options: options for the buffering cache instance, right now just local/remote hit/miss hooks
  */
 module.exports = function ({
     redisClient,
@@ -21,6 +22,7 @@ module.exports = function ({
     bufferTtlMsec,
     localCacheSize,
     localTtlMsec,
+    options,
 }) {
     if (_.isNil(redisClient) && !_.isObject(redisClient)) {
         throw new Error('redisClient must be provided and must be an object');
@@ -68,7 +70,8 @@ module.exports = function ({
         };
     }
 
-    return new BufferCache(remoteCacheSpec, localCacheSpec);
+    return new BufferCache(remoteCacheSpec, localCacheSpec,
+        !_.isNil(options) ? options : undefined);
 };
 
 module.exports.CACHE_LEVEL = BufferCache.CACHE_LEVEL;
