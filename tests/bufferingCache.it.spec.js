@@ -12,7 +12,7 @@ const Cache = require('../index');
 
 describe('buffering cache', () => {
     const redisClient = new Redis({
-        host: process.env['REDIS_HOST'],
+    host: process.env["REDIS_HOST"],
     port: +process.env["REDIS_PORT"],
     });
 
