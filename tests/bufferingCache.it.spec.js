@@ -10,12 +10,16 @@ const RedisCache = require('../lib/caches/redis');
 const MemoryCache = require('../lib/caches/memory');
 const Cache = require('../index');
 
-const redisClient = new Redis({
-    host: process.env['REDIS_HOST'],
-    port: +process.env['REDIS_PORT'],
-});
-
 describe('buffering cache', () => {
+    const redisClient = new Redis({
+        host: process.env['REDIS_HOST'],
+        port: +process.env['REDIS_PORT'],
+    });
+
+    after(() => {
+        redisClient.disconnect();
+    });
+
     it('fetch value from function and cache locally and in redis', (done) => {
         const redisCache = new RedisCache(redisClient);
 
