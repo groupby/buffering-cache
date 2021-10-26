@@ -34,7 +34,7 @@ const bufferingCache = new BufferingCache({
   ttlMsec: 5000, // Redis ttl. Must be a number gte 0
 
   // Optional:
-  bufferTtlMsec: 500, // Buffer TTL in msec. Defaults to ttlMsec / 2. Must be gt 0 and lt ttlMsec
+  bufferTtlMsec: 2500, // Buffer TTL in msec. Defaults to ttlMsec / 2. Must be gt 0 and lt ttlMsec
   localCacheSize: 0,  // Local LRU cache size. Defaults to 0 (disabled). Must be gt 0.
   localTtlMsec: 500   // Local LRU cache TTL. Defaults to 500 ms, or bufferTtlMsec, whichever is less
 });
