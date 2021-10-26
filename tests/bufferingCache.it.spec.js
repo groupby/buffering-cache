@@ -11,8 +11,8 @@ const MemoryCache = require('../lib/caches/memory');
 const Cache = require('../index');
 
 const redisClient = new Redis({
-    host: 'localhost',
-    port: 6379,
+    host: process.env['REDIS_HOST'],
+    port: +process.env['REDIS_PORT'],
 });
 
 describe('buffering cache', () => {

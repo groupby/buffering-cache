@@ -5,12 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "gulp test",
-    "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage",
-    "lint": "gulp lint"
+    "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage"
   },
-  "precommit": [
-    "lint"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/groupby/buffering-cache.git"
