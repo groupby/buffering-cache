@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const chai    = require('chai');
 const expect  = chai.expect;
 
