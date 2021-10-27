@@ -149,4 +149,16 @@ describe('cache', () => {
             bufferTtl: -1
         })).to.throw(/bufferTtl/);
     });
+
+    it('accepts the ttl as a function', () => {
+        expect(() => new Cache({
+            store: {
+                get:    (key) => {},
+                setpx:  (key, value, ttl) => {},
+                delete: (key) => {},
+                client: {}
+            },
+            ttl: () => { return 30 }
+        })).not.to.throw();
+    });
 });
