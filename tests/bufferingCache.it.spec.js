@@ -510,4 +510,15 @@ describe('buffering cache', () => {
         expect(() => new Cache(sampleConfig)).to.throw();
     })
 
+    it('ttl is a negative number', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        -1,
+            bufferTtlMsec:  450,
+            localCacheSize: 20,
+        };
+
+        expect(() => new Cache(sampleConfig)).to.throw();
+    })
+
 });

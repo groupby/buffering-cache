@@ -34,7 +34,7 @@ module.exports = function ({
 
     const cacheTtl = _.isFunction(ttlMsec) ? ttlMsec() : ttlMsec
 
-    if(!_.isNumber(cacheTtl)){
+    if(!_.isNumber(cacheTtl) || cacheTtl < 0){
         throw new Error('ttl must be a number greater than 0 or a function which returns a number greater than 0');
     }
 
