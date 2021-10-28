@@ -499,4 +499,15 @@ describe('buffering cache', () => {
         expect(sampleCache.remoteCache.getTtl()).to.eql(600);
     })
 
+    it('ttl gets a non number value by calling the function it is assigned', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        () => 'abc',
+            bufferTtlMsec:  450,
+            localCacheSize: 20,
+        };
+
+        expect(() => new Cache(sampleConfig)).to.throw();
+    })
+
 });

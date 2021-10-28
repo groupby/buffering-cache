@@ -34,6 +34,10 @@ module.exports = function ({
 
     const cacheTtl = _.isFunction(ttlMsec) ? ttlMsec() : ttlMsec
 
+    if(!_.isNumber(cacheTtl)){
+        throw new Error('ttl must be a number greater than 0 or a function which returns a number greater than 0');
+    }
+
     if (!_.isNil(bufferTtlMsec) && (!_.isNumber(bufferTtlMsec) || bufferTtlMsec < 0 || bufferTtlMsec > cacheTtl)) {
         throw new Error('bufferTtlMsec, if provided, must be a number greater than 0 and less than or equal to ttlMsec');
     }

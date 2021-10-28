@@ -161,4 +161,16 @@ describe('cache', () => {
             ttl: () => { return 30 }
         })).not.to.throw();
     });
+
+    it('throws error when the ttl as a function does not return number', () => {
+        expect(() => new Cache({
+            store: {
+                get:    (key) => {},
+                setpx:  (key, value, ttl) => {},
+                delete: (key) => {},
+                client: {}
+            },
+            ttl: () => { return 'abc' }
+        }).getTtl()).to.throw();
+    });
 });
