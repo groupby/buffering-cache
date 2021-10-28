@@ -28,11 +28,13 @@ module.exports = function ({
         throw new Error('redisClient must be provided and must be an object');
     }
 
-    if (_.isNil(ttlMsec) || !_.isNumber(ttlMsec)) {
-        throw new Error('ttlMsec must be provided and must be a number');
+    if (_.isNil(ttlMsec) || (!_.isNumber(ttlMsec) && !_.isFunction(ttlMsec))) {
+        throw new Error('ttlMsec must be provided and must be a positive number or a function that returns a positive number');
     }
 
-    if (!_.isNil(bufferTtlMsec) && (!_.isNumber(bufferTtlMsec) || bufferTtlMsec < 0 || bufferTtlMsec > ttlMsec)) {
+    const cacheTtl = _.isFunction(ttlMsec) ? ttlMsec() : ttlMsec
+
+    if (!_.isNil(bufferTtlMsec) && (!_.isNumber(bufferTtlMsec) || bufferTtlMsec < 0 || bufferTtlMsec > cacheTtl)) {
         throw new Error('bufferTtlMsec, if provided, must be a number greater than 0 and less than or equal to ttlMsec');
     }
 
@@ -51,7 +53,7 @@ module.exports = function ({
     const remoteCacheSpec = {
         store:     new RedisCache(redisClient),
         ttl:       ttlMsec,
-        bufferTtl: bufferTtlMsec || ttlMsec / 2,
+        bufferTtl: bufferTtlMsec ||  cacheTtl / 2,
     };
 
     let localCacheSpec = undefined;
