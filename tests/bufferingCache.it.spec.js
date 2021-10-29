@@ -487,4 +487,38 @@ describe('buffering cache', () => {
         expect(parameters.ttl).to.eql(450);
     });
 
+    it('ttl gets a value by calling the function it is assigned', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        () => 600,
+            bufferTtlMsec:  450,
+            localCacheSize: 20,
+        };
+
+        const sampleCache = new Cache(sampleConfig);
+        expect(sampleCache.remoteCache.getTtl()).to.eql(600);
+    })
+
+    it('ttl gets a non number value by calling the function it is assigned', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        () => 'abc',
+            bufferTtlMsec:  450,
+            localCacheSize: 20,
+        };
+
+        expect(() => new Cache(sampleConfig)).to.throw();
+    })
+
+    it('ttl is a negative number', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        -1,
+            bufferTtlMsec:  450,
+            localCacheSize: 20,
+        };
+
+        expect(() => new Cache(sampleConfig)).to.throw();
+    })
+
 });
