@@ -1,6 +1,6 @@
 {
   "name": "buffering-cache",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Node cache wrapper that keeps your cache warm",
   "main": "index.js",
   "scripts": {
