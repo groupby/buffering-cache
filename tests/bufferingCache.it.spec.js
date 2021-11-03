@@ -521,4 +521,30 @@ describe('buffering cache', () => {
         expect(() => new Cache(sampleConfig)).to.throw();
     })
 
+    it('accepts bufferTtl as a function', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        30,
+            bufferTtlMsec:  () => 14,
+            localCacheSize: 20,
+        };
+
+        expect(() => new Cache(sampleConfig)).to.not.throw();
+    })
+
+    it('bufferTtl as a function is evaluated in Cache setup as a number', () => {
+        const sampleConfig = {
+            redisClient,
+            ttlMsec:        30,
+            bufferTtlMsec:  () => 14,
+            localCacheSize: 20,
+        };
+
+        const cache = new Cache(sampleConfig);
+
+        console.log(cache);
+
+        expect(cache.remoteCache.getParams().bufferTtl).to.eql(14);
+    })
+
 });
