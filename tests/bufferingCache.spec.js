@@ -70,14 +70,14 @@ describe('buffering cache', () => {
             
             expect(functionCalledWith).to.eql(null);
             expect(remoteArgs.get).to.match(new RegExp(functionArg));
-            expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+            expect(remoteArgs.ttl).to.eql(null);
 
             expect(remoteArgs.setpx).to.eql({});
             expect(remoteArgs.delete).to.eql(null);
 
             done();
         });
-    });
+    }); 
 
     it('executes postCallMutator when passed and accessing from remote', (done) => {
         const remoteArgs = {
@@ -133,7 +133,7 @@ describe('buffering cache', () => {
             
             expect(functionCalledWith).to.eql(null);
             expect(remoteArgs.get).to.match(new RegExp(functionArg));
-            expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+            expect(remoteArgs.ttl).to.eql(null);
 
             expect(remoteArgs.setpx).to.eql({});
             expect(remoteArgs.delete).to.eql(null);
@@ -196,7 +196,7 @@ describe('buffering cache', () => {
 
             expect(functionCalledWith).to.match(new RegExp(functionArg));
             expect(remoteArgs.get).to.match(new RegExp(functionArg));
-            expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+            expect(remoteArgs.ttl).to.eql(null);
 
             expect(remoteArgs.setpx).not.to.eql({});
             expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
@@ -256,7 +256,7 @@ describe('buffering cache', () => {
 
             expect(functionCalledWith).to.match(new RegExp(functionArg));
             expect(remoteArgs.get).to.match(new RegExp(functionArg));
-            expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
+            expect(remoteArgs.ttl).to.eql(null);
 
             expect(remoteArgs.setpx).not.to.eql({});
             expect(remoteArgs.setpx.key).to.match(new RegExp(functionArg));
