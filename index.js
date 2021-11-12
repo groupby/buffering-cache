@@ -10,9 +10,6 @@ const DEFAULT_LOCAL_CACHE_TTL_MSEC = 500;
  * - ttlMsec
  *
  * Optional parameters:
- * - bufferTtlMsec: defaults to ttlMsec / 2
- * - localCacheSize: defaults to 0 (disabled)
- * - localTtlMsec: defaults to 500, only applies if localCacheSize is greater than 0
  * - options: options for the buffering cache instance, right now just local/remote hit/miss hooks
  */
 module.exports = function ({
