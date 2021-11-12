@@ -1,6 +1,5 @@
 const BufferCache = require('./lib');
 const RedisCache = require('./lib/caches/redis');
-const MemoryCache = require('./lib/caches/memory');
 const _ = require('lodash');
 
 const DEFAULT_LOCAL_CACHE_TTL_MSEC = 500;
@@ -11,17 +10,11 @@ const DEFAULT_LOCAL_CACHE_TTL_MSEC = 500;
  * - ttlMsec
  *
  * Optional parameters:
- * - bufferTtlMsec: defaults to ttlMsec / 2
- * - localCacheSize: defaults to 0 (disabled)
- * - localTtlMsec: defaults to 500, only applies if localCacheSize is greater than 0
  * - options: options for the buffering cache instance, right now just local/remote hit/miss hooks
  */
 module.exports = function ({
     redisClient,
     ttlMsec,
-    bufferTtlMsec,
-    localCacheSize,
-    localTtlMsec,
     options,
 }) {
     if (_.isNil(redisClient) && !_.isObject(redisClient)) {
@@ -33,50 +26,17 @@ module.exports = function ({
     }
 
     const cacheTtl = _.isFunction(ttlMsec) ? ttlMsec() : ttlMsec
-
+    
     if(!_.isNumber(cacheTtl) || cacheTtl < 0){
         throw new Error('ttl must be a number greater than 0 or a function which returns a number greater than 0');
-    }
-
-    if (!_.isNil(bufferTtlMsec) && (!_.isNumber(bufferTtlMsec) || bufferTtlMsec < 0 || bufferTtlMsec > cacheTtl)) {
-        throw new Error('bufferTtlMsec, if provided, must be a number greater than 0 and less than or equal to ttlMsec');
-    }
-
-    if (!_.isNil(localCacheSize) && (!_.isNumber(localCacheSize) || localCacheSize < 0)) {
-        throw new Error('localCacheSize, if provided, must be a number greater than or equal to 0');
-    }
-
-    if (!_.isNil(localTtlMsec) && (!_.isNumber(localTtlMsec) || localTtlMsec <= 0 || localTtlMsec > bufferTtlMsec)) {
-        throw new Error('localTtlMsec, if provided, must be a number greater than 0 and less than or equal to bufferTtlMsec');
-    }
-
-    if (!_.isNil(localTtlMsec) && _.isNil(localCacheSize)) {
-        throw new Error('if localTtlMsec is provided, localCacheSize must be provided as well');
     }
 
     const remoteCacheSpec = {
         store:     new RedisCache(redisClient),
         ttl:       ttlMsec,
-        bufferTtl: bufferTtlMsec ||  cacheTtl / 2,
     };
 
-    let localCacheSpec = undefined;
-
-    if (!_.isNil(localCacheSize) && localCacheSize > 0) {
-        let ttl = DEFAULT_LOCAL_CACHE_TTL_MSEC;
-
-        if (localTtlMsec) {
-            ttl = localTtlMsec;
-        } else if (remoteCacheSpec.bufferTtl && remoteCacheSpec.bufferTtl < DEFAULT_LOCAL_CACHE_TTL_MSEC) {
-            ttl = remoteCacheSpec.bufferTtl;
-        }
-        localCacheSpec = {
-            store: new MemoryCache(localCacheSize),
-            ttl:   ttl
-        };
-    }
-
-    return new BufferCache(remoteCacheSpec, localCacheSpec,
+    return new BufferCache(remoteCacheSpec,
         !_.isNil(options) ? options : undefined);
 };
 
