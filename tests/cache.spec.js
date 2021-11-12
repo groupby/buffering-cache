@@ -138,16 +138,6 @@ describe('cache', () => {
             }
         })).to.throw(/pttl/);
 
-        expect(() => new Cache({
-            store: {
-                client: {},
-                get:    (key) => {},
-                setpx:  (key, value, ttl) => {},
-                delete: (key) => {}
-            },
-            ttl:       30,
-            bufferTtl: -1
-        })).to.throw(/bufferTtl/);
     });
 
     it('accepts the ttl as a function', () => {
@@ -184,18 +174,5 @@ describe('cache', () => {
             },
             ttl: -1
         }).getTtl()).to.throw();
-    });
-
-    it('denies the bufferTtl as a function', () => {
-        expect(() => new Cache({
-            store: {
-                get:    (key) => {},
-                setpx:  (key, value, ttl) => {},
-                delete: (key) => {},
-                client: {}
-            },
-            ttl: 30,
-            bufferTtl: () => 1
-        })).to.throw();
     });
 });
