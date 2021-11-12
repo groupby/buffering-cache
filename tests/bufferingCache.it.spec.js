@@ -78,7 +78,7 @@ describe('buffering cache', () => {
             ttl:       2000,
         };
 
-        const bufferingCache = new BufferingCache(remoteCache, localCache);
+        const bufferingCache = new BufferingCache(remoteCache);
 
         const wrappedFunction = bufferingCache.wrapFunction((first, second, third) => {
             log.info(`Called with ${first} ${second} ${third}`);
@@ -144,18 +144,18 @@ describe('buffering cache', () => {
         });
 
         redisCache.client.flushdb()
-      .then(() => wrappedFunction('this', 'that', 'the other'))
-      .then((response) => expect(response).to.eql('thisthatthe other'))
-      .then(() => redisCache.client.keys('*'))
-      .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
-      .delay(250)
-      .then(() => redisCache.client.keys('*'))
-      .then((remoteKeys) => expect(remoteKeys.length).to.eql(0))
-      .then(() => wrappedFunction('this', 'that', 'the other'))
-      .then(() => redisCache.client.keys('*'))
-      .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
-      .then(() => done())
-      .catch((err) => done(err || 'fail'));
+            .then(() => wrappedFunction('this', 'that', 'the other'))
+            .then((response) => expect(response).to.eql('thisthatthe other'))
+            .then(() => redisCache.client.keys('*'))
+            .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
+            .delay(250)
+            .then(() => redisCache.client.keys('*'))
+            .then((remoteKeys) => expect(remoteKeys.length).to.eql(0))
+            .then(() => wrappedFunction('this', 'that', 'the other'))
+            .then(() => redisCache.client.keys('*'))
+            .then((remoteKeys) => expect(remoteKeys.length).to.eql(1))
+            .then(() => done())
+            .catch((err) => done(err || 'fail'));
     });
 
     it('redisClient not provided', () => {
@@ -193,18 +193,6 @@ describe('buffering cache', () => {
         expect(() => new Cache(sampleConfig)).to.throw();
     });
 
-    it('ttl is assigned the value of remoteCacheSpec.bufferttl', () => {
-        const sampleConfig = {
-            redisClient,
-            ttlMsec:        600,
-            bufferTtlMsec:  450,
-        };
-
-        const sampleCache = new Cache(sampleConfig);
-        const parameters = sampleCache.localCache.getParams();
-        expect(parameters.ttl).to.eql(450);
-    });
-
     it('ttl gets a value by calling the function it is assigned', () => {
         const sampleConfig = {
             redisClient,
@@ -235,5 +223,4 @@ describe('buffering cache', () => {
 
         expect(() => new Cache(sampleConfig)).to.throw();
     })
-
 });

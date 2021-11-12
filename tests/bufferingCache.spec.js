@@ -16,8 +16,7 @@ describe('buffering cache', () => {
                 pttl:   (key) => {},
                 client: {}
             },
-            ttl:       60,
-            bufferTtl: 30
+            ttl:       60
         };
 
         new BufferingCache(remoteCache);
@@ -68,7 +67,7 @@ describe('buffering cache', () => {
 
         wrappedFunction(functionArg).delay(10).then((value) => {
             expect(value).to.eql(getValue);
-        
+            
             expect(functionCalledWith).to.eql(null);
             expect(remoteArgs.get).to.match(new RegExp(functionArg));
             expect(remoteArgs.ttl).to.match(new RegExp(functionArg));
@@ -171,7 +170,6 @@ describe('buffering cache', () => {
                 client: {}
             },
             ttl:       60,
-            bufferTtl: 30
         };
 
     //getValue gets mutated
@@ -182,7 +180,7 @@ describe('buffering cache', () => {
             return d * 2;
         };
 
-        const bufferingCache = new BufferingCache(remoteCache, localCache);
+        const bufferingCache = new BufferingCache(remoteCache);
 
         let functionCalledWith = null;
         const wrappedFunction  = bufferingCache.wrapFunction((first) => {
@@ -192,7 +190,7 @@ describe('buffering cache', () => {
 
 
         const functionArg = 'give me this';
-
+        
         wrappedFunction(functionArg).delay(10).then((value) => {
             expect(value).to.eql(getValue * 2);
 
